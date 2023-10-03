@@ -2,6 +2,7 @@
 
 import pytest
 import requests
+import os
 
 # This tests aims to check if the db connection is successful by checking the length of the list of users
 def test_get_all_users():
@@ -15,3 +16,5 @@ def test_get_all_users():
     assert isinstance(data, list)  
     
     assert len(data) >= 1 #checks if the list is empty
+
+

@@ -4,7 +4,7 @@ from bson import ObjectId
 import openai
 import os
 
-openai.api_key = os.environ.get('OPENAI_KEY')
+openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 app = Flask(__name__)
 
@@ -52,8 +52,8 @@ def get_user(user_id):
 
     return user
 
-@app.route('/generate_plan/<string:user_id>', methods=['GET'])
-def generate_individual_plan(user_id):
+@app.route('/generate_diet/<string:user_id>', methods=['GET'])
+def generate_individual_diet(user_id):
 
     users_collection = establish_connection()
     user = users_collection.find_one({"_id": ObjectId(user_id)})
@@ -61,21 +61,21 @@ def generate_individual_plan(user_id):
     if user is None:
         return jsonify({"error": "User not found"}), 404
 
-    nutrition_plan = generate_plan(user)
+    nutrition_plan = generate_diet(user)
 
     response_data = {
-        "name": user.name,
+        "_id": user_id,
         "nutrition_plan": nutrition_plan
     }
 
     return jsonify(response_data)
 
-def generate_plan(user):
+def generate_diet(user):
     
     prompt = f"Hello, I'm {user['name']} and I am {user['age']} years old. "
     prompt += f"My height is {user['height']} cm and my weight is {user['weight']} kg. "
     prompt += f"I have a {user['body-structure']} body structure and my activity level is {user['activity']}. "
-    prompt += "I need help creating a personalized nutrition plan. Can you suggest a diet and exercise plan?"
+    prompt += "I need to create a weekly diet, day per day, with all the specific meals, with the previous conditions."
 
     # Call the OpenAI API to get the response
     response = openai.Completion.create(
