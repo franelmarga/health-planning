@@ -2,7 +2,9 @@ from flask import Flask, request, jsonify
 from db_connection import establish_connection
 from bson import ObjectId
 import openai
+import os
 
+openai.api_key = os.environ.get('OPENAI_KEY')
 
 app = Flask(__name__)
 
